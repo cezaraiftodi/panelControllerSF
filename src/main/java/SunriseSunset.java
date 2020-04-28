@@ -17,8 +17,8 @@ public class SunriseSunset {
 
     // SunriseSunset constructor fără arg, dar inițializează câmpurile.
   public SunriseSunset() {
-    this.location = new Location("27.2038", "77.5011");
-    this.calculator = new SunriseSunsetCalculator(location, TimeZone.getTimeZone("GMT+6"));
+    this.location = new Location("28.52", "47");
+    this.calculator = new SunriseSunsetCalculator(location, TimeZone.getTimeZone("GMT+3"));
     setDate();
     setOfficialSunrise();
     setOfficialSunset();

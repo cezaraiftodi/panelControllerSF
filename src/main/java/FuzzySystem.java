@@ -1,5 +1,5 @@
 public class FuzzySystem {
-  // 2. Interfereta
+  // 2. Inferenta
   // 3. Defuzzificare
 
   private String emisfera;
@@ -47,22 +47,43 @@ public class FuzzySystem {
 
   public double calculateOptimalSeasonalAngle(FuzzySystem input) {
     double unghi = 0;
-// Verifică sezonul și calculează unghiul in care panoul solar va rămâne în timp ce se rotește prin ore de zi pentru a maximiza acoperirea solară.
+// Verific sezonul și calculează unghiul in care panoul solar va rămâne în timp ce se rotește prin ore de zi pentru a maximiza acoperirea solară.
     if ( input.getSezon().equals("vara") ) {
       unghi = (input.getLatitudine() * 0.92) - 24.3;
       System.out.println("Unghiul de inclinare a fost setat la " + unghi + "° pentru optimizari in seznoul de vara");
+      if(0 <= unghi && unghi <=60) {
+        System.out.println("Ajustare mica");
+      } else if(60 <= unghi && unghi <= 120) {
+        System.out.println("Ajustare medie");
+      } else if(120 <= unghi && unghi <= 180) {
+        System.out.println("Ajustare mare");
+      }
       return unghi;
     } else if ( input.getSezon().equals("primavara") || (input.getSezon().equals("toamna")) ) {
       unghi = (input.getLatitudine() * 0.98) - 2.3;
       System.out.println("Unghiul de inclinare a fost setat la "
                          + unghi
                          + "° pentru optimizari in seznoul de primavra/toamna");
+      if(0 <= unghi && unghi <=60) {
+        System.out.println("Ajustare mica");
+      } else if(60 <= unghi && unghi <= 120) {
+        System.out.println("Ajustare medie");
+      } else if(120 <= unghi && unghi <= 180) {
+        System.out.println("Ajustare mare");
+      }
       return unghi;
     } else if ( input.getSezon().equals("vara") ) {
 
 
     } else { unghi = (input.getLatitudine() * 0.89) + 24; }
     System.out.println("Unghiul de inclinare a fost setat la " + unghi + "° pentru optimizari in seznoul de iarna");
+    if(0 <= unghi && unghi <=60) {
+      System.out.println("Ajustare mica");
+    } else if(60 <= unghi && unghi <= 120) {
+      System.out.println("Ajustare medie");
+    } else if(120 <= unghi && unghi <= 180) {
+      System.out.println("Ajustare mare");
+    }
     return unghi;
   }
 
@@ -72,7 +93,7 @@ public class FuzzySystem {
    */
   public String implicationOfFuzzySet(double fuzzyValue, SunriseSunset s, FuzzySystem f) {
     if ( fuzzyValue != 1.0 ) {
-    // Verificați dacă unghiul sezonului curent este corect
+    // Verific dacă unghiul sezonului curent este corect
       String currentSeasonAngle = s.checkCalenderDate();
       if ( f.getSezon().equals(currentSeasonAngle) ) {
         // unghi corect pentru sezonul curent
