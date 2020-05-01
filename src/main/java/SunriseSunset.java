@@ -15,7 +15,7 @@ public class SunriseSunset {
   private Location location;
   private String direction;
 
-    // SunriseSunset constructor fără arg, dar inițializează câmpurile.
+  // SunriseSunset constructor fără arg, doar inițializează câmpurile.
   public SunriseSunset() {
     this.location = new Location("28.52", "47");
     this.calculator = new SunriseSunsetCalculator(location, TimeZone.getTimeZone("GMT+3"));
@@ -34,11 +34,11 @@ public class SunriseSunset {
   }
 
   public void setOfficialSunrise() {
-    this.officialSunrise = calculator.getOfficialSunriseForDate(Calendar.getInstance()) ;
+    this.officialSunrise = calculator.getOfficialSunriseForDate(Calendar.getInstance());
   }
 
   public String getOfficialSunrise() {
-    return  officialSunrise;
+    return officialSunrise;
   }
 
   public void setOfficialSunset() {
@@ -61,126 +61,122 @@ public class SunriseSunset {
     return direction;
   }
 
-  // Verificări pentru emisfera nordică, pentru a testa daca unghiul total al panoului este corect pentru sezonul setat se  verifica data curentă comparativ cu datele stocate.
- public String checkCalenderDate() {
+  // Verificări pentru emisfera setata, pentru a testa daca unghiul total al panoului este corect pentru sezonul setat se  verifica data curentă comparativ cu datele stocate. Setez intervalul corespunzator anotimpurilor
+  public String preiaDataCalendar() {
     Calendar min = Calendar.getInstance();
     Calendar max = Calendar.getInstance();
-    Calendar current = Calendar.getInstance();
+    Calendar timpCurent = Calendar.getInstance();
     min.set(getDate().getYear(), Calendar.JUNE, 21);
     max.set(getDate().getYear(), Calendar.SEPTEMBER, 22);
-    if ( current.before(max) && current.after(min) ) {
-      // Ajustare la unghiul de vara
-      return "vara";
+    if ( timpCurent.before(max) && timpCurent.after(min) ) {
+      return "vara";       // Ajustare la unghiul de vara
     }
     min.set(getDate().getYear(), Calendar.SEPTEMBER, 22);
     max.set(getDate().getYear(), Calendar.DECEMBER, 21);
-    if ( current.before(max) && current.after(min) ) {
-      // Ajustare la unghiul de toamna
-      return "toamna";
+    if ( timpCurent.before(max) && timpCurent.after(min) ) {
+      return "toamna";       // Ajustare la unghiul de toamna
     }
     min.set(getDate().getYear(), Calendar.DECEMBER, 21);
     max.set(getDate().getYear(), Calendar.MARCH, 20);
-    if ( current.before(max) && current.after(min) ) {
-      // Ajustare la unghiul de iarna
-      return "iarna";
+    if ( timpCurent.before(max) && timpCurent.after(min) ) {
+      return "iarna";       // Ajustare la unghiul de iarna
     }
     min.set(getDate().getYear(), Calendar.MARCH, 20);
     max.set(getDate().getYear(), Calendar.JUNE, 21);
-    if ( current.before(max) && current.after(min) ) {
-      // Ajustare la unghiul de primavara
+    if ( timpCurent.before(max) && timpCurent.after(min) ) {
     }
-    return "primavara";
+    return "primavara";       // Ajustare la unghiul de primavara
   }
-  // Funcția de membru care returnează o valoare fuzzy în funcție de ora cu care
-  // putem obține cel mai mare randament al panoului.
-  public double fuzzificationOfTimeOfDay() {
+
+  // Funcția  care returnează o valoare fuzzy în funcție de ora cu care putem obține cel mai mare randament al panoului.
+  public double timeOfDayFuzzyfication() {
     // Input - ora, output - fuzzy value
-    Calendar c = Calendar.getInstance();
-    c.setTime(getDate());
-    int hour = c.get(Calendar.HOUR_OF_DAY);
-    if ( hour >= 5 ) {
+    Calendar calendarData = Calendar.getInstance();
+    calendarData.setTime(getDate());
+    int ora = calendarData.get(Calendar.HOUR_OF_DAY);
+    if ( ora >= 5 ) {
       return 0.0;
-    } else if ( hour >= 6 ) {
+    } else if ( ora >= 6 ) {
       return 0.1;
-    } else if ( hour >= 7 ) {
+    } else if ( ora >= 7 ) {
       return 0.3;
-    } else if ( hour >= 8 ) {
+    } else if ( ora >= 8 ) {
       return 0.5;
-    } else if ( hour >= 10 ) {
+    } else if ( ora >= 10 ) {
       return 0.7;
-    } else if ( hour >= 11 ) {
+    } else if ( ora >= 11 ) {
       return 0.9;
-    } else if ( hour >= 12 ) {
+    } else if ( ora >= 12 ) {
       return 1.0;
-    } else if ( hour >= 13 ) {
+    } else if ( ora >= 13 ) {
       return 0.9;
-    } else if ( hour >= 14 ) {
+    } else if ( ora >= 14 ) {
       return 0.8;
-    } else if ( hour >= 15 ) {
+    } else if ( ora >= 15 ) {
       return 0.7;
-    } else if ( hour >= 16 ) {
+    } else if ( ora >= 16 ) {
       return 0.6;
-    } else if ( hour >= 17 ) {
+    } else if ( ora >= 17 ) {
       return 0.4;
-    } else if ( hour >= 18 ) {
+    } else if ( ora >= 18 ) {
       return 0.3;
-    } else if ( hour >= 19 ) {
+    } else if ( ora >= 19 ) {
       return 0.2;
-    } else if ( hour >= 20 ) {
+    } else if ( ora >= 20 ) {
       return 0.1;
     } else {
       return 0.0;
     }
   }
 
-  // Aceste grade sunt calculate ca și cum panoul solar este plat, adica la 180 °.
-  public int calculateOptimalTimeOfDayAngle() {
-    Calendar c = Calendar.getInstance();
-    c.setTime(getDate());
-    int hour = c.get(Calendar.HOUR_OF_DAY);
-    if ( hour == 5 ) {
+  // Aceste grade sunt calculate ca și cum panoul solar este plat, adica la 180, de asemenea panoul se roteste intr 140 si 180°.
+  public int optimalTimeOfDayAngle() {
+    Calendar calendarData = Calendar.getInstance();
+    calendarData.setTime(getDate());
+    int ora = calendarData.get(Calendar.HOUR_OF_DAY);
+    if ( ora == 5 ) {
       setDirection("est");
       return 145;
-    } else if ( hour == 6 ) {
+    } else if ( ora == 6 ) {
       setDirection("est");
       return 150;
-    } else if ( hour == 7 ) {
+    } else if ( ora == 7 ) {
       setDirection("est");
       return 155;
-    } else if ( hour == 8 ) {
+    } else if ( ora == 8 ) {
       setDirection("est");
       return 160;
-    } else if ( hour == 10 ) {
+    } else if ( ora == 10 ) {
       setDirection("est");
       return 165;
-    } else if ( hour == 11 ) {
+    } else if ( ora == 11 ) {
       setDirection("est");
       return 170;
-    } else if ( hour == 12 ) {
+    } else if ( ora == 12 ) {
       setDirection("nord");
       return 180;
-    } else if ( hour == 13 ) {
+    } else if ( ora == 13 ) {
       setDirection("vest");
       return 175;
-    } else if ( hour == 14 ) {
+    } else if ( ora == 14 ) {
       setDirection("vest");
       return 170;
-    } else if ( hour == 15 ) {
+    } else if ( ora == 15 ) {
       setDirection("vest");
       return 165;
-    } else if ( hour == 16 ) {
+    } else if ( ora == 16 ) {
       setDirection("vest");
       return 160;
-    } else if ( hour == 17 ) {
+    } else if ( ora == 17 ) {
       setDirection("vest");
       return 155;
-    } else if ( hour == 18 ) {
+    } else if ( ora == 18 ) {
       setDirection("vest");
       return 150;
-    } else if ( hour == 19 ) {
+    } else if ( ora == 19 ) {
       setDirection("vest");
       return 145;
-    } else if ( hour == 20 ) {
+    } else if ( ora == 20 ) {
       setDirection("est");
       return 140;
     } else {
@@ -190,8 +186,8 @@ public class SunriseSunset {
   }
 
   //Reprezinta iesirea: răsăritul și apusul constructorului SunriseSunset
-  public void output() {
-    System.out.println(getDate() + " officialSunrise : " + getOfficialSunrise());
-    System.out.println(getDate() + " officialSunset  : " + getOfficialSunset());
+  public void iesire() {
+    System.out.println("Data: " + getDate() + " Rasarit : " + getOfficialSunrise());
+    System.out.println("Data: " + getDate() + " Apus  : " + getOfficialSunset());
   }
 }
